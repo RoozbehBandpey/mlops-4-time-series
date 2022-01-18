@@ -8,9 +8,11 @@ This repository contains code for orchestration of machine learning operations (
 ## System Design
 Orchestrating machine learning workload can easily become daunting if the suitable architecture is not though ahead. Because of various steps and stages involved to deliver a trustworthy ML model and the dependency among those steps the solution would require constant communications between different components. Event-driven design fits to this requirement at best. In event-driven systems, every component emits an event to the central event-bus, these events are principally status values that are broad casted to the downstream. Other components subscribe to the specific event topics that are relying on. For instance in order to automate dataset preparation pipelines. The pipeline can subscribe to storage upload/write events and run the pipeline subsequently.
 ### Components
-
+Following components are considered and provisioned for this solution:
 #### Azure Data Lake Storage Gen 2.0
+`dlsmlopsforecasting` is the main data storage, it has two container for curating data, it was primarily considered for Azure Databricks usage so it has been mounted to `dbw-mlops-forecasting` with credential passthrough with this script [mount_adls.py](./data_ops/demand-forecasting-dev/utils/mount_adls.py)
 #### Azure Databricks
+`dbw-mlops-forecasting` is considered the main place for data manipulation, dataset preparation and potentially training and QA serving
 #### Azure Machine Learning
 `mlw-mlops-forecasting` is the primary service to tackle experimentation, training, scoring, deploying and managing ML models. This architecture uses Azure ML python SDK to interact with Azure ML as well as creation of pipelines and submitting experiment runs.
 
@@ -21,6 +23,7 @@ Azure Machine Learning pipelines provide reusable machine learning workflows tha
 #### Azure Container Registry
 The scoring Python script is packaged as a Docker image and versioned in the registry.
 #### Azure Key Vault
+All operational secrets, and certificates are stored in key vault
 #### Azure Storage
 
 Blob containers are used to store the logs from the scoring service. In this case, both the input data and the model prediction are collected. After some transformation, these logs can be used for model retraining.
@@ -30,6 +33,7 @@ As part of the release pipeline, the QA and staging environment is mimicked by d
 
 Once the scoring webservice image is thoroughly tested in the QA environment, it is deployed to the production environment on a managed Kubernetes cluster.
 #### Azure Event Hubs
+
 #### Azure Event Grid Subscription
 This service is used to subscribe resource specific events:
 
@@ -64,7 +68,8 @@ Azure Repos. Is the primary place for hosting code.
 
 ## Flow
 
-This design eliminates concept of landing zone to reduce costs, so the assumption is data arrives directly into data lake. In real world it is recommended to have 
+This design eliminates concept of landing zone to reduce costs, so the assumption is data arrives directly into data lake. In real world it is recommended to have a separate storage account called landing
+ine zone to store data (source aligned data) as it arrives without any changes to them.
 Data is being ingested from external sources, after that it has been available within `bronze` container of `dlsmlopsforecasting` is Delta format.
 
 ## Re-training
