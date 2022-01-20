@@ -3,7 +3,7 @@ BRONZE_MOUNTPOINT = "/mnt/bronze"
 SILVER_MOUNTPOINT = "/mnt/silver"
 message = ""
 
-STORAGE_ACCOUNT = "dlsmlopsforecastingdev"
+STORAGE_ACCOUNT = "dlsmlopsforecasting"
 BRONZE_CONTAINER = "bronze"
 SILVER_CONTAINER = "silver"
 
@@ -50,6 +50,13 @@ else:
           mount_point = SILVER_MOUNTPOINT,
           extra_configs = configs)
         message += f"<br/>{SILVER_MOUNTPOINT} has been mounted"
+
+# COMMAND ----------
+
+# BRONZE_MOUNTPOINT = "/mnt/bronze"
+# SILVER_MOUNTPOINT = "/mnt/silver"
+# dbutils.fs.unmount(SILVER_MOUNTPOINT)
+# dbutils.fs.unmount(BRONZE_MOUNTPOINT)
 
 # COMMAND ----------
 

@@ -1,11 +1,21 @@
 # Databricks notebook source
-df = spark.sql("""SELECT * FROM variables.stml""")
+#azure-ml-storage-all-users
+# stml-sas-token
+
+dbutils.secrets.listScopes()
+
+# COMMAND ----------
+
+dbutils.secrets.list('azure-ml-storage-all-users')
+
+# COMMAND ----------
+
 MOUNTPOINT = "/mnt/azureml"
 message = ""
 
-STORAGE_ACCOUNT = df.take(1)[0][2]
-CONTAINER = df.take(1)[0][3]
-SASTOKEN = df.take(1)[0][1]
+STORAGE_ACCOUNT = "stmlwmlopsforecasting"
+CONTAINER = "azureml-blobstore-bd63b639-8836-4d1b-823b-17738975655b"
+SASTOKEN = dbutils.secrets.get(scope='azure-ml-storage-all-users', key='stml-sas-token')
 
 SOURCE = "wasbs://{container}@{storage_acct}.blob.core.windows.net/".format(container=CONTAINER, storage_acct=STORAGE_ACCOUNT)
 URI = "fs.azure.sas.{container}.{storage_acct}.blob.core.windows.net".format(container=CONTAINER, storage_acct=STORAGE_ACCOUNT)

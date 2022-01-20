@@ -13,7 +13,7 @@ SILVER_MOUNTPOINT = "/mnt/silver"
 
 # COMMAND ----------
 
-# MAGIC %fs ls mnt/bronze/
+# MAGIC %fs ls mnt/bronze/kaggle-data/
 
 # COMMAND ----------
 

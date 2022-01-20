@@ -122,7 +122,7 @@ forecastsTablePath = SILVER_MOUNTPOINT + f"/kaggle/{forecastsFolderName}"
 # COMMAND ----------
 
 spark.sql(f"DROP TABLE IF EXISTS {prodTableName}")
-dbutils.fs.rm(tablePath, recurse=True)
+dbutils.fs.rm(prodTablePath, recurse=True)
 
 trainDF = spark.table("kaggle_train_data_delta")
 testDF = spark.table("kaggle_test_data_delta")
