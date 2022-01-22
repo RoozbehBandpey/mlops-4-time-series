@@ -17,14 +17,21 @@ print("SDK version:", azureml.core.VERSION)
 
 
 wsh = WorkspaceHelper()
+wsh.authenticate_with_sp()
 ws = wsh.get_workspace()
     
 datastore = Datastore.get_default(ws)
 
 print(datastore)
 
-# create a TabularDataset from 3 file paths in datastore
+# create test dataset
 datastore_test_paths = [(datastore, 'kaggle/test.parquet/*.snappy.parquet')]
 
-# demand_test_ds = Dataset.Tabular.from_parquet_files(path=datastore_test_paths, set_column_types={'date': DataType.to_datetime(formats='%Y-%m-%d %H:%M:%S')})
-# demand_test_ds.register(ws, 'demand-forecasting-kaggle-test', 'Demand forecasting data from kaggle, One month of data December 2017', create_new_version=True)
+demand_test_ds = Dataset.Tabular.from_parquet_files(path=datastore_test_paths, set_column_types={'date': DataType.to_datetime(formats='%Y-%m-%d %H:%M:%S')})
+demand_test_ds.register(ws, 'demand-forecasting-kaggle-test', 'Demand forecasting data from kaggle', create_new_version=True)
+
+# create train dataset
+datastore_train_paths = [(datastore, 'kaggle/train.parquet/*.snappy.parquet')]
+
+demand_train_ds = Dataset.Tabular.from_parquet_files(path=datastore_train_paths, set_column_types={'date': DataType.to_datetime(formats='%Y-%m-%d %H:%M:%S')})
+demand_train_ds.register(ws, 'demand-forecasting-kaggle-train', 'Demand forecasting data from kaggle', create_new_version=True)
