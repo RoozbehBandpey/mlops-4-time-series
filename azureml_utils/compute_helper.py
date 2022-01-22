@@ -58,8 +58,7 @@ class ComputeHelper():
 			print('db_resource_group {}'.format(db_resource_group))
 			print('db_workspace_name {}'.format(db_workspace_name))
 			keyvault = self.workspace.get_default_keyvault()
-			# db_access_token = keyvault.get_secret(name='databricks-access-token-4-aml')
-			db_access_token = "dapibeb40bebe4b4566c2e7ca38fc495dc3e-2"
+			db_access_token = keyvault.get_secret(name='databricks-access-token-4-aml')
 
 		
 			config = DatabricksCompute.attach_configuration(

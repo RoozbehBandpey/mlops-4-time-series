@@ -19,6 +19,7 @@ from azureml_utils.compute_helper import ComputeHelper
 
 
 wsh = WorkspaceHelper()
+wsh.authenticate_with_sp()
 ws = wsh.get_workspace()
 
 
@@ -76,23 +77,25 @@ try:
 except Exception as ex:
     dbfs_ds = Datastore.register_dbfs(ws, datastore_name='dbfs_datastore')
 
-step_1_input = DataReference(datastore=dbfs_ds, path_on_datastore="bronze/kaggle-data/", data_reference_name="input")
-step_1_output = PipelineData("output", datastore=dbfs_ds)
+dataset_cleansing_step_input = DataReference(datastore=dbfs_ds, path_on_datastore="bronze/kaggle-data/", data_reference_name="input")
+dataset_cleansing_step_output = PipelineData("dataset_cleansing_step_output", datastore=dbfs_ds)
 
 
 dataset_cleansing_step = DatabricksStep(
     name="exploratory-data-analysis",
-    inputs=[step_1_input],
+    inputs=[dataset_cleansing_step_input],
+    outputs=[dataset_cleansing_step_output],
     notebook_path=eda_notebook_path,
     run_name='DB_Notebook_Run_EDA',
     compute_target=databricks_compute,
     existing_cluster_id= "0119-094446-s7gn0dcd",
     allow_reuse=True
 )
-
-azureml_ingest = DatabricksStep(
+azureml_ingest_step_output = PipelineData("azureml_ingest_step_output", datastore=dbfs_ds)
+azureml_ingest_step = DatabricksStep(
     name="azure-ml-ingest",
-    # inputs=[dataset_cleansing_step],
+    inputs=[dataset_cleansing_step_output],
+    outputs=[azureml_ingest_step_output],
     notebook_path=ingest_notebook_path,
     run_name='DB_Notebook_Run_Ingest',
     compute_target=databricks_compute,
@@ -119,6 +122,7 @@ print('Source directory for the step is {}.'.format(os.path.realpath(source_dire
 #     hash_paths=None)
 # This returns a Step
 dataset_registration_step = PythonScriptStep(
+    inputs=[azureml_ingest_step_output], 
     name="dataset_registration_step",
     script_name="data_ops/data_pipelines/register_aml_dataset.py", 
     compute_target=compute_cluster, 
@@ -127,8 +131,7 @@ dataset_registration_step = PythonScriptStep(
     )
 print("dataset_registration_step created")
 
-steps = [dataset_cleansing_step, azureml_ingest, dataset_registration_step]
-steps = [dataset_registration_step]
+steps = [dataset_cleansing_step, azureml_ingest_step, dataset_registration_step]
 dataset_prep_pipeline = Pipeline(workspace=ws, steps=steps)
 print ("Pipeline is built")
 
