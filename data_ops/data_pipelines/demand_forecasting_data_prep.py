@@ -102,7 +102,8 @@ azureml_ingest_step = DatabricksStep(
     run_name='DB_Notebook_Run_Ingest',
     compute_target=databricks_compute,
     existing_cluster_id= "0119-094446-s7gn0dcd",
-    allow_reuse=True
+    allow_reuse=True,
+    permit_cluster_restart=True
 )
 
 source_directory = './'
