@@ -23,13 +23,14 @@ ws = wsh.get_workspace()
 
 
 ch = ComputeHelper(ws)
-compute_instance = ch.get_compute_instance('demand-forcasting-cpu', 'STANDARD_D4_V2')
-databricks_compute= ch.get_databricks_compute(compute_name='db-dev-compute', db_resource_group='rg-mlops-forecasting-dev', db_workspace_name='dbw-mlops-forecasting-dev')
+# compute_instance = ch.get_compute_instance('cpu8c-ram28gb-rb', 'STANDARD_D4_V2')
+compute_cluster = ch.get_compute_cluster(compute_name='pipelineclstr04', vm_size='Standard_DS3_v2', min_nodes=0, max_nodes=4)
+databricks_compute= ch.get_databricks_compute(compute_name='databricks-cpu', db_resource_group='MLE-Demos', db_workspace_name='dbw-mlops-forecasting')
 
 print(databricks_compute)
 
-eda_notebook_path = './data_ops/demand-forecasting-dev/01_eda.py'
-ingest_notebook_path = './data_ops/demand-forecasting-dev/03_azureml_ingest.py'
+eda_notebook_path = '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/01_eda'
+ingest_notebook_path = '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/03_azureml_ingest'
 # Syntax
 # DatabricksStep(
 #                 name,
@@ -85,7 +86,7 @@ dataset_cleansing_step = DatabricksStep(
     notebook_path=eda_notebook_path,
     run_name='DB_Notebook_Run_EDA',
     compute_target=databricks_compute,
-    existing_cluster_id= "1217-140706-wecfpf3g",
+    existing_cluster_id= "0119-094446-s7gn0dcd",
     allow_reuse=True
 )
 
@@ -95,11 +96,11 @@ azureml_ingest = DatabricksStep(
     notebook_path=ingest_notebook_path,
     run_name='DB_Notebook_Run_Ingest',
     compute_target=databricks_compute,
-    existing_cluster_id= "1217-140706-wecfpf3g",
+    existing_cluster_id= "0119-094446-s7gn0dcd",
     allow_reuse=True
 )
 
-source_directory = './data_ops/data_pipelines/'
+source_directory = './'
 print('Source directory for the step is {}.'.format(os.path.realpath(source_directory)))
 
 # Syntax
@@ -119,14 +120,15 @@ print('Source directory for the step is {}.'.format(os.path.realpath(source_dire
 # This returns a Step
 dataset_registration_step = PythonScriptStep(
     name="dataset_registration_step",
-    script_name="register_aml_dataset.py", 
-    compute_target=compute_instance, 
+    script_name="data_ops/data_pipelines/register_aml_dataset.py", 
+    compute_target=compute_cluster, 
     source_directory=source_directory,
     allow_reuse=True
     )
 print("dataset_registration_step created")
 
 steps = [dataset_cleansing_step, azureml_ingest, dataset_registration_step]
+steps = [dataset_registration_step]
 dataset_prep_pipeline = Pipeline(workspace=ws, steps=steps)
 print ("Pipeline is built")
 
