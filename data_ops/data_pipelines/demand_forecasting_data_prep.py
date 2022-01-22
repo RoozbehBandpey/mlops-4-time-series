@@ -91,7 +91,9 @@ dataset_cleansing_step = DatabricksStep(
     existing_cluster_id= "0119-094446-s7gn0dcd",
     allow_reuse=True
 )
-azureml_ingest_step_output = PipelineData("azureml_ingest_step_output", datastore=dbfs_ds)
+default_ds = Datastore.get_default(ws)
+
+azureml_ingest_step_output = PipelineData("azureml_ingest_step_output", datastore=default_ds)
 azureml_ingest_step = DatabricksStep(
     name="azure-ml-ingest",
     inputs=[dataset_cleansing_step_output],
