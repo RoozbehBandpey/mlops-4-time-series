@@ -152,7 +152,7 @@ dataset_registration_step = PythonScriptStep(
     compute_target=compute_cluster, 
     source_directory=source_directory,
     allow_reuse=True,
-    # runconfig=run_config
+    runconfig=run_config
     )
 print("dataset_registration_step created")
 
