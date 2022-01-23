@@ -30,7 +30,7 @@ pr:
 
 stages:
 - stage: Build
-variables:
+  variables:
   - name: buildArtifactPath
     value:  'cicd/databricks'
   jobs:
