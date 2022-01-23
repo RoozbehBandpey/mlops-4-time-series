@@ -6,3 +6,8 @@ steps:
   inputs:
     PathtoPublish: '$(buildArtifactPath)'
     ArtifactName: '$(pipelineArtifactName)'
+
+- task: startcluster@0
+  inputs:
+    clusterid: '0119-094446-s7gn0dcd'
+    failOnStderr: true
