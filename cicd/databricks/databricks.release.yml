@@ -22,9 +22,12 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - download: current
-          displayName: Download Artifacts
-          artifact: '$(buildArtifactPath)'
+        - task: DownloadBuildArtifacts@1
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            artifactName: '$(pipelineArtifactName)'
+            downloadPath: '$(buildArtifactPath)'
 # - task: DataThirstLtd.databricksDeployScriptsTasks.databricksDeployScriptsTask.databricksDeployScripts@0
 #   displayName: 'Databricks Notebooks deployment'
 #   inputs:
