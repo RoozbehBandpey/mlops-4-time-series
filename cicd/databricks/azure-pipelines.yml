@@ -31,15 +31,14 @@ pr:
 variables:
 - name: productionReady
   value: false
+- name: buildArtifactPath
+  value:  'cicd/databricks'
+- name: pipelineArtifactName
+  value:  'databricks-dev-build'
 - group: mlops-dev
 
 stages:
 - stage: Build
-  variables:
-  - name: buildArtifactPath
-    value:  'cicd/databricks'
-  - name: pipelineArtifactName
-    value:  'databricks-dev-build'
   jobs:
   - job: Build
     pool:
