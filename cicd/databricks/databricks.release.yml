@@ -1,16 +1,13 @@
-
-
-
-# steps:
-# - task: DataThirstLtd.databricksDeployScriptsTasks.databricksDeployScriptsTask.databricksDeployScripts@0
-#   displayName: 'Databricks Notebooks deployment'
-#   inputs:
-#     authMethod: servicePrincipal
-#     applicationId: '0549311d-d674-41e0-b4bf-ccf623df35c4'
-#     spSecret: 'P5w7Q~dh6g_MjARbxvCe-DRfMlWDiBFI7c63L'
-#     resourceGroup: 'MLE-Demos'
-#     workspace: 'dbw-mlops-forecasting'
-#     subscriptionId: '5e54cdea-5cda-46ba-af31-b1c1b15430e6'
-#     tenantId: 'ec0c3cd0-5bd6-4c13-87c2-f45543cab0e1'
-#     localPath: '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/'
-#     databricksPath: '/Shared/demand-forecasting-dev/'
+steps:
+- task: DataThirstLtd.databricksDeployScriptsTasks.databricksDeployScriptsTask.databricksDeployScripts@0
+  displayName: 'Databricks Notebooks deployment'
+  inputs:
+    authMethod: servicePrincipal
+    applicationId: $(SP_ID)
+    spSecret: $(SP_SECRET)
+    resourceGroup: $(RESOURCE_GROUP)
+    workspace: $(DATABRICKS_WORKSPACE)
+    subscriptionId: $(SUBSCRIPTION_ID)
+    tenantId: $(TENANT_ID)
+    localPath: '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/'
+    databricksPath: '/Shared/demand-forecasting-dev/'

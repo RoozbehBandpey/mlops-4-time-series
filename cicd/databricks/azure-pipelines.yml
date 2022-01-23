@@ -28,14 +28,32 @@ pr:
     - data_ops/*
     - cicd/databricks/*
 
+variables:
+- name: productionReady
+  value: false
+- group: mlops-dev
+
 stages:
 - stage: Build
   variables:
   - name: buildArtifactPath
     value:  'cicd/databricks'
+  - name: pipelineArtifactName
+    value:  'databricks-dev-build'
   jobs:
   - job: Build
     pool:
       vmImage: 'ubuntu-latest'
     steps:
     - template: databricks.build.yml
+
+- stage: ReleaseDEV
+  displayName: DEV Release
+  variables:
+  - name: dockerRegistry
+    value:  'mlops-acr'
+  condition: eq('${{ variables.productionReady }}', false)
+  jobs:
+  - template: databricks.release.yml
+    parameters:
+      environment: dev
