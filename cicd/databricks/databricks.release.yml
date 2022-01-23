@@ -28,15 +28,3 @@ jobs:
             downloadType: 'single'
             artifactName: '$(pipelineArtifactName)'
             downloadPath: '$(buildArtifactPath)'
-# - task: DataThirstLtd.databricksDeployScriptsTasks.databricksDeployScriptsTask.databricksDeployScripts@0
-#   displayName: 'Databricks Notebooks deployment'
-#   inputs:
-#     authMethod: servicePrincipal
-#     applicationId: $(SP_ID)
-#     spSecret: $(SP_SECRET)
-#     resourceGroup: $(RESOURCE_GROUP)
-#     workspace: $(DATABRICKS_WORKSPACE)
-#     subscriptionId: $(SUBSCRIPTION_ID)
-#     tenantId: $(TENANT_ID)
-#     localPath: '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/'
-#     databricksPath: '/Shared/demand-forecasting-dev/'

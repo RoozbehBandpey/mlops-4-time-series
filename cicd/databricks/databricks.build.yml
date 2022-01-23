@@ -9,15 +9,15 @@ steps:
 
 - task: configuredatabricks@0
   inputs:
-    url: 'https://adb-4509844401293036.16.azuredatabricks.net'
-    token: 'dapi3128a2daa67e97948aaac88f3a4ffeac-2'
+    url: $(DATABRICKS_WORKSPACE_URL)
+    token: $(DATABRICKS_ACCESS_TOKEN)
 
 - task: startcluster@0
   inputs:
-    clusterid: '0119-094446-s7gn0dcd'
+    clusterid: $(TEST_CLUSTER_ID)
     failOnStderr: true
 
 - task: executenotebook@0
   inputs:
     notebookPath: '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/01_eda'
-    existingClusterId: '''0119-094446-s7gn0dcd'''
+    existingClusterId: $(TEST_CLUSTER_ID)
