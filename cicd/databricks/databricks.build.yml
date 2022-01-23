@@ -1,0 +1,8 @@
+
+steps:
+- checkout: self
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: DEV Build'
+  inputs:
+    PathtoPublish: '$(buildArtifactPath)'
+    ArtifactName: databricks-dev-build
