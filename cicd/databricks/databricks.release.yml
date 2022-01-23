@@ -1,13 +1,39 @@
-steps:
-- task: DataThirstLtd.databricksDeployScriptsTasks.databricksDeployScriptsTask.databricksDeployScripts@0
-  displayName: 'Databricks Notebooks deployment'
-  inputs:
-    authMethod: servicePrincipal
-    applicationId: $(SP_ID)
-    spSecret: $(SP_SECRET)
-    resourceGroup: $(RESOURCE_GROUP)
-    workspace: $(DATABRICKS_WORKSPACE)
-    subscriptionId: $(SUBSCRIPTION_ID)
-    tenantId: $(TENANT_ID)
-    localPath: '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/'
-    databricksPath: '/Shared/demand-forecasting-dev/'
+# Template for Recommender API Deployment
+#
+# The required environment parameter is used to retrieve specific
+# variable groups from Azure DevOps and to parameterize resource names.
+# 
+parameters:
+- name: environment
+  type: string
+  values:
+  - dev
+  - int
+  - prd
+
+jobs:
+- deployment: DeployDatabricksNotebooks${{parameters.environment}}
+  pool:
+    vmImage: 'ubuntu-latest'
+  environment: mlops-forecasting-${{parameters.environment}}
+
+    
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - download: current
+          displayName: Download Artifacts
+          artifact: $(pipelineArtifactName)
+# - task: DataThirstLtd.databricksDeployScriptsTasks.databricksDeployScriptsTask.databricksDeployScripts@0
+#   displayName: 'Databricks Notebooks deployment'
+#   inputs:
+#     authMethod: servicePrincipal
+#     applicationId: $(SP_ID)
+#     spSecret: $(SP_SECRET)
+#     resourceGroup: $(RESOURCE_GROUP)
+#     workspace: $(DATABRICKS_WORKSPACE)
+#     subscriptionId: $(SUBSCRIPTION_ID)
+#     tenantId: $(TENANT_ID)
+#     localPath: '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/'
+#     databricksPath: '/Shared/demand-forecasting-dev/'
