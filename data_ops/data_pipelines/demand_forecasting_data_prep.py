@@ -9,6 +9,10 @@ from azureml.pipeline.core import Pipeline, PipelineData
 from azureml.pipeline.steps import DatabricksStep
 from azureml.core.datastore import Datastore
 from azureml.data.data_reference import DataReference
+from azureml.core.runconfig import RunConfiguration
+from azureml.core.conda_dependencies import CondaDependencies
+from azureml.core.runconfig import DEFAULT_CPU_IMAGE
+
 
 # Check core SDK version number
 print("SDK version:", azureml.core.VERSION)
@@ -124,13 +128,31 @@ print('Source directory for the step is {}.'.format(os.path.realpath(source_dire
 #     version=None, 
 #     hash_paths=None)
 # This returns a Step
+
+
+# create a new runconfig object
+run_config = RunConfiguration()
+
+# enable Docker 
+run_config.environment.docker.enabled = True
+
+# set Docker base image to the default CPU-based image
+run_config.environment.docker.base_image = DEFAULT_CPU_IMAGE
+
+# use conda_dependencies.yml to create a conda environment in the Docker image for execution
+run_config.environment.python.user_managed_dependencies = False
+
+# specify CondaDependencies obj
+run_config.environment.python.conda_dependencies = CondaDependencies.create(conda_packages=['azure-cli-core==2.24.0'])
+
 dataset_registration_step = PythonScriptStep(
     inputs=[azureml_ingest_step_output], 
     name="dataset_registration_step",
     script_name="data_ops/data_pipelines/register_aml_dataset.py", 
     compute_target=compute_cluster, 
     source_directory=source_directory,
-    allow_reuse=True
+    allow_reuse=True,
+    runconfig=run_config
     )
 print("dataset_registration_step created")
 
