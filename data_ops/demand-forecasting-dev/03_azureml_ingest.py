@@ -1,4 +1,8 @@
 # Databricks notebook source
+dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()
+
+# COMMAND ----------
+
 # MAGIC %run ./utils/mount_stml
 
 # COMMAND ----------

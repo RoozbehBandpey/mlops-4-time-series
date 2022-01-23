@@ -43,11 +43,31 @@ print(
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC Create the database where the feature tables will be stored.
+
+# COMMAND ----------
+
+# MAGIC %sql 
+# MAGIC CREATE DATABASE IF NOT EXISTS feature_store_demand_forecasting;
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC Create an instance of the Feature Store client.
+
+# COMMAND ----------
+
+fs = feature_store.FeatureStoreClient()
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC Now we need a function which we can apply to our Spark DataFrame in order to generate our forecast.  We'll reuse the function we employed in notebook 2 for parallel model training and prediction.
 
 # COMMAND ----------
 
 from fbprophet import Prophet
+import mlflow
 
 # structure of udf result set
 result_schema = """
@@ -79,10 +99,13 @@ def get_forecast_spark(keys, grouped_pd):
     yearly_seasonality=True,
     seasonality_mode='multiplicative'
     )
-  
+    
+    
   # train model
   model.fit( grouped_pd.rename(columns={'date':'ds', 'sales':'y'})[['ds','y']]  )
-  
+  params = extract_params(model)
+  mlflow.prophet.log_model(model, artifact_path="./")
+  mlflow.log_params(params)
   # make forecast
   future_pd = model.make_future_dataframe(
     periods=days_to_forecast, 
