@@ -12,7 +12,7 @@ parameters:
   - prd
 
 jobs:
-- deployment: deploy-databricks-notebooks-${{parameters.environment}}
+- deployment: deploy_databricks_notebooks_${{parameters.environment}}
   pool:
     vmImage: 'ubuntu-latest'
   environment: mlops-forecasting-${{parameters.environment}}
