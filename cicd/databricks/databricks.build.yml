@@ -5,4 +5,4 @@ steps:
   displayName: 'Publish Artifact: DEV Build'
   inputs:
     PathtoPublish: '$(buildArtifactPath)'
-    ArtifactName: $(pipelineArtifactName)
+    ArtifactName: '$(pipelineArtifactName)'

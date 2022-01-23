@@ -12,7 +12,7 @@ parameters:
   - prd
 
 jobs:
-- deployment: DeployDatabricksNotebooks${{parameters.environment}}
+- deployment: deploy-databricks-notebooks-${{parameters.environment}}
   pool:
     vmImage: 'ubuntu-latest'
   environment: mlops-forecasting-${{parameters.environment}}
@@ -24,7 +24,7 @@ jobs:
         steps:
         - download: current
           displayName: Download Artifacts
-          artifact: $(pipelineArtifactName)
+          artifact: '$(buildArtifactPath)'
 # - task: DataThirstLtd.databricksDeployScriptsTasks.databricksDeployScriptsTask.databricksDeployScripts@0
 #   displayName: 'Databricks Notebooks deployment'
 #   inputs:

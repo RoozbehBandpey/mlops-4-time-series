@@ -57,3 +57,19 @@ stages:
   - template: databricks.release.yml
     parameters:
       environment: dev
+
+- stage: ReleaseINT
+  displayName: INT Release
+  condition: eq('${{ variables.productionReady }}', true)
+  jobs:
+  - template: databricks.release.yml
+    parameters:
+      environment: int
+ 
+- stage: ReleasePRD
+  displayName: PRD Release
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'), eq('${{ variables.productionReady }}', true))
+  jobs:
+  - template: databricks.release.yml
+    parameters:
+      environment: prd
