@@ -1,6 +1,5 @@
 import os
 import sys
-import os
 import azureml.core
 from azureml.core import Workspace, Experiment
 from azureml.pipeline.core import Pipeline
@@ -22,149 +21,149 @@ from azureml_utils.workspace_helper import WorkspaceHelper
 from azureml_utils.compute_helper import ComputeHelper
 
 
-wsh = WorkspaceHelper()
-wsh.authenticate_with_sp()
+
+wsh = WorkspaceHelper(auth_type='sp')
 ws = wsh.get_workspace()
 
 
-# ch = ComputeHelper(ws)
-# # compute_instance = ch.get_compute_instance('cpu8c-ram28gb-rb', 'STANDARD_D4_V2')
-# compute_cluster = ch.get_compute_cluster(compute_name='pipelineclstr04', vm_size='Standard_DS3_v2', min_nodes=0, max_nodes=4)
-# databricks_compute= ch.get_databricks_compute(compute_name='databricks-cpu', db_resource_group='MLE-Demos', db_workspace_name='dbw-mlops-forecasting')
+ch = ComputeHelper(ws)
+# compute_instance = ch.get_compute_instance('cpu8c-ram28gb-rb', 'STANDARD_D4_V2')
+compute_cluster = ch.get_compute_cluster(compute_name='pipelineclstr04', vm_size='Standard_DS3_v2', min_nodes=0, max_nodes=4)
+databricks_compute= ch.get_databricks_compute(compute_name='databricks-cpu', db_resource_group='MLE-Demos', db_workspace_name='dbw-mlops-forecasting')
 
-# print(databricks_compute)
+print(databricks_compute)
 
-# eda_notebook_path = '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/01_eda'
-# ingest_notebook_path = '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/03_azureml_ingest'
-# # Syntax
-# # DatabricksStep(
-# #                 name,
-# #                 inputs=None,
-# #                 outputs=None,
-# #                 existing_cluster_id=None,
-# #                 spark_version=None,
-# #                 node_type=None,
-# #                 instance_pool_id=None,
-# #                 num_workers=None,
-# #                 min_workers=None,
-# #                 max_workers=None,
-# #                 spark_env_variables=None,
-# #                 spark_conf=None,
-# #                 init_scripts=None,
-# #                 cluster_log_dbfs_path=None,
-# #                 notebook_path=None,
-# #                 notebook_params=None,
-# #                 python_script_path=None,
-# #                 python_script_params=None,
-# #                 main_class_name=None,
-# #                 jar_params=None,
-# #                 python_script_name=None,
-# #                 source_directory=None,
-# #                 hash_paths=None,
-# #                 run_name=None,
-# #                 timeout_seconds=None,
-# #                 runconfig=None,
-# #                 maven_libraries=None,
-# #                 pypi_libraries=None,
-# #                 egg_libraries=None,
-# #                 jar_libraries=None,
-# #                 rcran_libraries=None,
-# #                 compute_target=None,
-# #                 allow_reuse=True,
-# #                 version=None,
-# #                 permit_cluster_restart=None)
-
-
-# try:
-#     dbfs_ds = Datastore.get(workspace=ws, datastore_name='dbfs_datastore')
-#     print('DBFS Datastore already exists')
-# except Exception as ex:
-#     dbfs_ds = Datastore.register_dbfs(ws, datastore_name='dbfs_datastore')
-
-# dataset_cleansing_step_input = DataReference(datastore=dbfs_ds, path_on_datastore="bronze/kaggle-data/", data_reference_name="input")
-# dataset_cleansing_step_output = PipelineData("dataset_cleansing_step_output", datastore=dbfs_ds)
+eda_notebook_path = '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/01_eda'
+ingest_notebook_path = '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/03_azureml_ingest'
+# Syntax
+# DatabricksStep(
+#                 name,
+#                 inputs=None,
+#                 outputs=None,
+#                 existing_cluster_id=None,
+#                 spark_version=None,
+#                 node_type=None,
+#                 instance_pool_id=None,
+#                 num_workers=None,
+#                 min_workers=None,
+#                 max_workers=None,
+#                 spark_env_variables=None,
+#                 spark_conf=None,
+#                 init_scripts=None,
+#                 cluster_log_dbfs_path=None,
+#                 notebook_path=None,
+#                 notebook_params=None,
+#                 python_script_path=None,
+#                 python_script_params=None,
+#                 main_class_name=None,
+#                 jar_params=None,
+#                 python_script_name=None,
+#                 source_directory=None,
+#                 hash_paths=None,
+#                 run_name=None,
+#                 timeout_seconds=None,
+#                 runconfig=None,
+#                 maven_libraries=None,
+#                 pypi_libraries=None,
+#                 egg_libraries=None,
+#                 jar_libraries=None,
+#                 rcran_libraries=None,
+#                 compute_target=None,
+#                 allow_reuse=True,
+#                 version=None,
+#                 permit_cluster_restart=None)
 
 
-# dataset_cleansing_step = DatabricksStep(
-#     name="exploratory-data-analysis",
-#     inputs=[dataset_cleansing_step_input],
-#     outputs=[dataset_cleansing_step_output],
-#     notebook_path=eda_notebook_path,
-#     run_name='DB_Notebook_Run_EDA',
-#     compute_target=databricks_compute,
-#     existing_cluster_id= "0119-094446-s7gn0dcd",
-#     allow_reuse=True
-# )
-# default_ds = Datastore.get_default(ws)
+try:
+    dbfs_ds = Datastore.get(workspace=ws, datastore_name='dbfs_datastore')
+    print('DBFS Datastore already exists')
+except Exception as ex:
+    dbfs_ds = Datastore.register_dbfs(ws, datastore_name='dbfs_datastore')
 
-# azureml_ingest_step_output = PipelineData("azureml_ingest_step_output", datastore=default_ds)
-
-# azureml_ingest_step = DatabricksStep(
-#     name="azure-ml-ingest",
-#     inputs=[dataset_cleansing_step_output],
-#     outputs=[azureml_ingest_step_output],
-#     notebook_path=ingest_notebook_path,
-#     run_name='DB_Notebook_Run_Ingest',
-#     compute_target=databricks_compute,
-#     existing_cluster_id= "0119-094446-s7gn0dcd",
-#     allow_reuse=True,
-#     permit_cluster_restart=True
-# )
-
-# source_directory = './'
-# print('Source directory for the step is {}.'.format(os.path.realpath(source_directory)))
-
-# # Syntax
-# # PythonScriptStep(
-# #     script_name, 
-# #     name=None, 
-# #     arguments=None, 
-# #     compute_target=None, 
-# #     runconfig=None, 
-# #     inputs=None, 
-# #     outputs=None, 
-# #     params=None, 
-# #     source_directory=None, 
-# #     allow_reuse=True, 
-# #     version=None, 
-# #     hash_paths=None)
-# # This returns a Step
+dataset_cleansing_step_input = DataReference(datastore=dbfs_ds, path_on_datastore="bronze/kaggle-data/", data_reference_name="input")
+dataset_cleansing_step_output = PipelineData("dataset_cleansing_step_output", datastore=dbfs_ds)
 
 
-# # # create a new runconfig object
-# # run_config = RunConfiguration()
+dataset_cleansing_step = DatabricksStep(
+    name="exploratory-data-analysis",
+    inputs=[dataset_cleansing_step_input],
+    outputs=[dataset_cleansing_step_output],
+    notebook_path=eda_notebook_path,
+    run_name='DB_Notebook_Run_EDA',
+    compute_target=databricks_compute,
+    existing_cluster_id= "0119-094446-s7gn0dcd",
+    allow_reuse=True
+)
+default_ds = Datastore.get_default(ws)
 
-# # # enable Docker 
-# # run_config.environment.docker.enabled = True
+azureml_ingest_step_output = PipelineData("azureml_ingest_step_output", datastore=default_ds)
 
-# # # set Docker base image to the default CPU-based image
-# # run_config.environment.docker.base_image = DEFAULT_CPU_IMAGE
+azureml_ingest_step = DatabricksStep(
+    name="azure-ml-ingest",
+    inputs=[dataset_cleansing_step_output],
+    outputs=[azureml_ingest_step_output],
+    notebook_path=ingest_notebook_path,
+    run_name='DB_Notebook_Run_Ingest',
+    compute_target=databricks_compute,
+    existing_cluster_id= "0119-094446-s7gn0dcd",
+    allow_reuse=True,
+    permit_cluster_restart=True
+)
 
-# # # use conda_dependencies.yml to create a conda environment in the Docker image for execution
-# # run_config.environment.python.user_managed_dependencies = False
+source_directory = './'
+print('Source directory for the step is {}.'.format(os.path.realpath(source_directory)))
 
-# # # specify CondaDependencies obj
-# # run_config.environment.python.conda_dependencies = CondaDependencies.create(conda_packages=['azure-cli-core'])
+# Syntax
+# PythonScriptStep(
+#     script_name, 
+#     name=None, 
+#     arguments=None, 
+#     compute_target=None, 
+#     runconfig=None, 
+#     inputs=None, 
+#     outputs=None, 
+#     params=None, 
+#     source_directory=None, 
+#     allow_reuse=True, 
+#     version=None, 
+#     hash_paths=None)
+# This returns a Step
 
-# dataset_registration_step = PythonScriptStep(
-#     inputs=[azureml_ingest_step_output], 
-#     name="dataset_registration_step",
-#     script_name="data_ops/data_pipelines/register_aml_dataset.py", 
-#     compute_target=compute_cluster, 
-#     source_directory=source_directory,
-#     allow_reuse=True,
-#     # runconfig=run_config
-#     )
-# print("dataset_registration_step created")
 
-# steps = [dataset_cleansing_step, azureml_ingest_step, dataset_registration_step]
-# dataset_prep_pipeline = Pipeline(workspace=ws, steps=steps)
-# print ("Pipeline is built")
+# create a new runconfig object
+run_config = RunConfiguration()
 
-# dataset_prep_pipeline.validate()
-# print("Pipeline validation complete")
+# enable Docker 
+run_config.environment.docker.enabled = True
 
-# dataset_prep_pipeline.publish(name="dataset_prep_pipeline", description="dataset_prep_pipeline", version="0.0.1", continue_on_step_failure=False)
+# set Docker base image to the default CPU-based image
+run_config.environment.docker.base_image = DEFAULT_CPU_IMAGE
 
-# pipeline_run = Experiment(ws, 'dataset_prep_pipeline').submit(dataset_prep_pipeline)
-# pipeline_run.wait_for_completion()
+# use conda_dependencies.yml to create a conda environment in the Docker image for execution
+run_config.environment.python.user_managed_dependencies = False
+
+# specify CondaDependencies obj
+run_config.environment.python.conda_dependencies = CondaDependencies.create(conda_packages=['python-dotenv'])
+
+dataset_registration_step = PythonScriptStep(
+    inputs=[azureml_ingest_step_output], 
+    name="dataset_registration_step",
+    script_name="data_ops/data_pipelines/register_aml_dataset.py", 
+    compute_target=compute_cluster, 
+    source_directory=source_directory,
+    allow_reuse=True,
+    # runconfig=run_config
+    )
+print("dataset_registration_step created")
+
+steps = [dataset_cleansing_step, azureml_ingest_step, dataset_registration_step]
+dataset_prep_pipeline = Pipeline(workspace=ws, steps=steps)
+print ("Pipeline is built")
+
+dataset_prep_pipeline.validate()
+print("Pipeline validation complete")
+
+dataset_prep_pipeline.publish(name="dataset_prep_pipeline", description="dataset_prep_pipeline", version="0.0.1", continue_on_step_failure=False)
+
+pipeline_run = Experiment(ws, 'dataset_prep_pipeline').submit(dataset_prep_pipeline)
+pipeline_run.wait_for_completion()

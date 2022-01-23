@@ -1,10 +1,11 @@
 import os
 import logging
+import sys
 from azureml.core import Workspace
-from azureml.core import Keyvault
 from azureml.core.authentication import AzureCliAuthentication, MsiAuthentication, InteractiveLoginAuthentication, ServicePrincipalAuthentication
-from azure.keyvault.secrets import SecretClient
-from azure.identity import DefaultAzureCredential
+from azureml.core import Keyvault
+sys.path.append(os.getcwd())
+from environment.env_variables import Env
 
 
 
@@ -20,28 +21,23 @@ class WorkspaceHelper():
 		- ...
 	"""
 
-	def __init__(self, ws_config_file='config.json', auth_type='sp'):
+	def __init__(self, auth_type='sp'):
 		"""Initializes an AML workspace object"""
-		self.ws_config_file = ws_config_file
+
+		e = Env()
 		
-		if auth_type='sp':
-			auth = ServicePrincipalAuthentication(tenant_id=os.environ.get("TENANT_ID"), service_principal_id=os.environ.get("SP_ID"), service_principal_password=os.environ.get("SP_PASSWORD"))
-		else if auth_type='int':
-			auth=InteractiveLoginAuthentication(tenant_id=os.environ.get("TENANT_ID"))
-		else if auth_type='cli':
+		if auth_type == 'sp':
+			auth = ServicePrincipalAuthentication(tenant_id=e.tenant_id, service_principal_id=e.sp_id, service_principal_password=e.sp_password)
+		elif auth_type == 'int':
+			auth=InteractiveLoginAuthentication(tenant_id=e.tenant_id)
+		elif auth_type == 'cli':
 			auth=AzureCliAuthentication()
-		else if auth_type='msi':
+		elif auth_type == 'msi':
 			auth=MsiAuthentication()
 		else:
 			raise(Exception)
 		
-		self.ws = Workspace.from_config(
-			auth=auth,
-			path=os.path.join(
-				os.path.dirname(os.path.realpath(__file__)),
-				self.ws_config_file
-			)
-		)
+		self.ws = Workspace(subscription_id=e.subscription_id, resource_group=e.resource_group, workspace_name=e.workspace_name, auth=auth)
 		print(f"Found workspace {self.ws.name} \n\tat location {self.ws.location}\n\t with the id:{self.ws._workspace_id}")
 
 
