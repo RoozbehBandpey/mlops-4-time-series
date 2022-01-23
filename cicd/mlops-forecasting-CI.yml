@@ -1,0 +1,21 @@
+trigger:
+  branches:
+    include:
+    - refs/heads/master
+  paths:
+    include:
+    - data_ops/
+    - cicd/
+jobs:
+- job: Job_1
+  displayName: Agent job 1
+  pool:
+    vmImage: ubuntu-18.04
+  steps:
+  - checkout: self
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: DEV Build'
+    inputs:
+      PathtoPublish: cicd/databricks-artifacts
+      ArtifactName: DEV Build
+...
