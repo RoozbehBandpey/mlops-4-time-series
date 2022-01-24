@@ -2,7 +2,7 @@ import os
 import sys
 import azureml.core
 from azureml.core import Workspace, Experiment
-from azureml.pipeline.core import Pipeline
+from azureml.pipeline.core import Pipeline, StepSequence
 from azureml.pipeline.steps import PythonScriptStep
 from azureml.pipeline.core import Pipeline, PipelineData
 from azureml.pipeline.steps import DatabricksStep
@@ -157,7 +157,8 @@ dataset_registration_step = PythonScriptStep(
 print("dataset_registration_step created")
 
 steps = [dataset_cleansing_step, azureml_ingest_step, dataset_registration_step]
-dataset_prep_pipeline = Pipeline(workspace=ws, steps=steps)
+step_sequence = StepSequence(steps=steps)
+dataset_prep_pipeline = Pipeline(workspace=ws, steps=step_sequence)
 print ("Pipeline is built")
 
 dataset_prep_pipeline.validate()
