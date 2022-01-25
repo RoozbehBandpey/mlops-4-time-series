@@ -30,7 +30,7 @@ pr:
 
 variables:
 - name: productionReady
-  value: true
+  value: false
 - name: buildArtifactPath
   value:  'cicd/databricks'
 - name: pipelineArtifactName
@@ -51,7 +51,7 @@ stages:
   variables:
   - name: dockerRegistry
     value:  'mlops-acr'
-  condition: eq('${{ variables.productionReady }}', true)
+  condition: eq('${{ variables.productionReady }}', false)
   jobs:
   - template: databricks.release.yml
     parameters:
