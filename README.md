@@ -1,12 +1,15 @@
-# MLOps with Databricks and Azure ML for demand forecasting use case
+# Accenture MLOps Demo
 
 This repository contains code for orchestration of machine learning operations (MLOps) with Azure ML and Azure Databricks for demand forecasting use case
 
 
-![Overall MLOps Architecture](./architecture/mlops.drawio.png)
+[![Build Status](https://dev.azure.com/accenture-ai-mle/mlops-demo/_apis/build/status/databricks-cicd?branchName=master)](https://dev.azure.com/accenture-ai-mle/mlops-demo/_build/latest?definitionId=2&branchName=master)
+
+
+![Overall MLOps Architecture](documentation/architecture/mlops-overall-architecture.drawio.png)
 
 ## System Design
-Orchestrating machine learning workload can easily become daunting if the suitable architecture is not though ahead. Because of various steps and stages involved to deliver a trustworthy ML model and the dependency among those steps the solution would require constant communications between different components. Event-driven design fits to this requirement at best. In event-driven systems, every component emits an event to the central event-bus, these events are principally status values that are broad casted to the downstream. Other components subscribe to the specific event topics that are relying on. For instance in order to automate dataset preparation pipelines. The pipeline can subscribe to storage upload/write events and run the pipeline subsequently.
+
 ### Components
 Following components are considered and provisioned for this solution:
 #### Azure Data Lake Storage Gen 2.0
