@@ -1,0 +1,30 @@
+# Template for Recommender API Deployment
+#
+# The required environment parameter is used to retrieve specific
+# variable groups from Azure DevOps and to parameterize resource names.
+# 
+parameters:
+- name: environment
+  type: string
+  values:
+  - dev
+  - int
+  - prd
+
+jobs:
+- deployment: deploy_databricks_notebooks_${{parameters.environment}}
+  pool:
+    vmImage: 'ubuntu-latest'
+  environment: mlops-forecasting-${{parameters.environment}}
+
+    
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: DownloadBuildArtifacts@1
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            artifactName: '$(pipelineArtifactName)'
+            downloadPath: '$(buildArtifactPath)'

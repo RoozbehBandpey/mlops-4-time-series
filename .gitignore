@@ -146,3 +146,8 @@ db_config.json
 *.amltmp
 
 compute_setup.sh
+
+.ipynb_aml_checkpoints/ 
+*.amltmp 
+*.amltemp
+.amlignore

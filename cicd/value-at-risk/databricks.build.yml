@@ -1,0 +1,22 @@
+
+steps:
+- checkout: self
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: DEV Build'
+  inputs:
+    PathtoPublish: '$(buildArtifactPath)'
+    ArtifactName: '$(pipelineArtifactName)'
+
+- task: configuredatabricks@0
+  inputs:
+    url: $(DATABRICKS_WORKSPACE_URL)
+    token: $(DATABRICKS_ACCESS_TOKEN)
+
+- task: startcluster@0
+  inputs:
+    clusterid: $(TEST_CLUSTER_ID)
+
+- task: executenotebook@0
+  inputs:
+    notebookPath: '/Repos/roozbeh.bandpey@accenture.com/mlops-forecasting/data_ops/demand-forecasting-dev/01_eda'
+    existingClusterId: $(TEST_CLUSTER_ID)

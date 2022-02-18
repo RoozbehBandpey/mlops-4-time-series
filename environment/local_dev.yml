@@ -1,8 +1,0 @@
-name: azure-ml-local-dev
-channels:
-  - defaults
-dependencies:
-  - python=3.9.0
-  - pip
-  - pip:
-    - azureml-defaults
