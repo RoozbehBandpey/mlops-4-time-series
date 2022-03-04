@@ -16,7 +16,7 @@ trigger:
     - refs/heads/main
   paths:
     include:
-    - value-at-risk/*
+    - value_at_risk/*
     - cicd/value-at-risk/*
 
 pr:
@@ -25,7 +25,7 @@ pr:
     - main
   paths:
     include:
-    - value-at-risk/*
+    - value_at_risk/*
     - cicd/value-at-risk/*
 
 variables:
