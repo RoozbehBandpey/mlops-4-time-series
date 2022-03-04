@@ -1,4 +1,4 @@
-# Accenture MLOps Demo
+# MLOps Demo for time series analysis
 
 
 ## Use cases
