@@ -4,7 +4,7 @@
 ## Use cases
 |Pipeline|Build & Release Status|
 |-----------------|-----------------|
-|Value at Risk|[[![Build Status](https://dev.azure.com/accenture-ai-mle/mlops-demo/_apis/build/status/value-at-risk-cicd?branchName=main)](https://dev.azure.com/accenture-ai-mle/mlops-demo/_build/latest?definitionId=3&branchName=main)|
+|Value at Risk|[![Build Status](https://dev.azure.com/accenture-ai-mle/mlops-demo/_apis/build/status/value-at-risk-cicd?branchName=main)](https://dev.azure.com/accenture-ai-mle/mlops-demo/_build/latest?definitionId=3&branchName=main)|
 |Demand Forecasting|[![Build Status](https://dev.azure.com/accenture-ai-mle/mlops-demo/_apis/build/status/demand-forecasting-cicd?branchName=master)](https://dev.azure.com/accenture-ai-mle/mlops-demo/_build/latest?definitionId=4&branchName=master)|
 
 
