@@ -13,7 +13,7 @@
 trigger:
   branches:
     include:
-    - refs/heads/master
+    - refs/heads/main
   paths:
     include:
     - data_ops/*
@@ -22,7 +22,7 @@ trigger:
 pr:
   branches:
     include:
-    - master
+    - main
   paths:
     include:
     - data_ops/*
@@ -67,7 +67,7 @@ stages:
  
 - stage: ReleasePRD
   displayName: PRD Release
-  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'), eq('${{ variables.productionReady }}', true))
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'), eq('${{ variables.productionReady }}', true))
   jobs:
   - template: release.yml
     parameters:
