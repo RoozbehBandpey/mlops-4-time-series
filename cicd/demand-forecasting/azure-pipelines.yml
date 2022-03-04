@@ -44,7 +44,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - template: databricks.build.yml
+    - template: build.yml
 
 - stage: ReleaseDEV
   displayName: DEV Release
@@ -53,7 +53,7 @@ stages:
     value:  'mlops-acr'
   condition: eq('${{ variables.productionReady }}', false)
   jobs:
-  - template: databricks.release.yml
+  - template: release.yml
     parameters:
       environment: dev
 
@@ -61,7 +61,7 @@ stages:
   displayName: INT Release
   condition: eq('${{ variables.productionReady }}', true)
   jobs:
-  - template: databricks.release.yml
+  - template: release.yml
     parameters:
       environment: int
  
@@ -69,6 +69,6 @@ stages:
   displayName: PRD Release
   condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'), eq('${{ variables.productionReady }}', true))
   jobs:
-  - template: databricks.release.yml
+  - template: release.yml
     parameters:
       environment: prd
