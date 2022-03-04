@@ -17,7 +17,7 @@ trigger:
   paths:
     include:
     - data_ops/*
-    - cicd/databricks/*
+    - cicd/value-at-risk/*
 
 pr:
   branches:
@@ -26,13 +26,13 @@ pr:
   paths:
     include:
     - data_ops/*
-    - cicd/databricks/*
+    - cicd/value-at-risk/*
 
 variables:
 - name: productionReady
   value: false
 - name: buildArtifactPath
-  value:  'cicd/databricks'
+  value:  'cicd/value-at-risk'
 - name: pipelineArtifactName
   value:  'databricks-dev-build'
 - group: mlops-dev
