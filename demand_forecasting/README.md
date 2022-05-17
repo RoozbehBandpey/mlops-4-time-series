@@ -3,7 +3,7 @@
 This repository contains code for orchestration of machine learning operations (MLOps) with Azure ML and Azure Databricks for demand forecasting use case
 
 
-![Overall MLOps Architecture](./architecture/mlops.drawio.png)
+![Overall MLOps Architecture](/documentation/architecture/mlops-demand-forecasting.png)
 
 ## System Design
 Orchestrating machine learning workload can easily become daunting if the suitable architecture is not though ahead. Because of various steps and stages involved to deliver a trustworthy ML model and the dependency among those steps the solution would require constant communications between different components. Event-driven design fits to this requirement at best. In event-driven systems, every component emits an event to the central event-bus, these events are principally status values that are broad casted to the downstream. Other components subscribe to the specific event topics that are relying on. For instance in order to automate dataset preparation pipelines. The pipeline can subscribe to storage upload/write events and run the pipeline subsequently.
