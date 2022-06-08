@@ -15,9 +15,9 @@
 ![Overall MLOps Architecture](documentation/architecture/mlops-overall-architecture.drawio.png)
 
 ## Contribution
-* Best practices to create cluster
+* Follow below table to create cluster
 
-| Cluster properties | Description|Best practice|
+| Cluster properties | Description|Configuration settings|
 |-----------------|-----------------|-----------------|
 |Cluster mode|depending upon requirement|Standard|
 |Runtime version|depending on workload requirements (standard or ML)|If choosing ML, make sure to use 10.4 LTS ML (includes Apache Spark 3.2.1, Scala 2.12)|
