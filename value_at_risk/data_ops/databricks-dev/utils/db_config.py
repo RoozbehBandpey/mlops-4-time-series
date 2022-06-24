@@ -8,7 +8,7 @@ spark.conf.set("spark.databricks.io.cache.enabled", "true")
 
 # COMMAND ----------
 
-dbutils.widgets.text("widget_schema_name", "CRYPTO_DB", "schema")
+dbutils.widgets.text("widget_schema_name", "MARKET_DB", "schema")
 
 # COMMAND ----------
 
@@ -31,7 +31,3 @@ display(spark.sql(f"DESCRIBE SCHEMA EXTENDED {schemaName}"))
 # COMMAND ----------
 
 dbutils.notebook.exit(schemaName)
-
-# COMMAND ----------
-
-

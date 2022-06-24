@@ -10,6 +10,14 @@ import pyspark.sql.functions as F
 
 # COMMAND ----------
 
+trainDF = spark.table("default.kaggle_train_data_delta")
+
+# COMMAND ----------
+
+trainDF
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC We'll be making predictions on store-item pairs, of which we have 500 in our dataset. We'll set our shuffle partitions accordingly.
 
@@ -47,8 +55,9 @@ print(
 
 # COMMAND ----------
 
-# MAGIC %sql 
-# MAGIC CREATE DATABASE IF NOT EXISTS feature_store_demand_forecasting;
+#needs to be deleted beacuse the feature store already created in notebook 2
+%sql 
+CREATE DATABASE IF NOT EXISTS feature_store_demand_forecasting;
 
 # COMMAND ----------
 
@@ -57,7 +66,42 @@ print(
 
 # COMMAND ----------
 
+#needs to be deleted beacuse the feature store already created in notebook 2
+from databricks import feature_store
 fs = feature_store.FeatureStoreClient()
+
+# COMMAND ----------
+
+store_item_feature_df = fs.read_table(
+  name=f"feature_store_db.store_item_features"
+)
+
+# COMMAND ----------
+
+from databricks.feature_store import FeatureLookup
+feature_lookups = [
+    FeatureLookup(
+      table_name = 'feature_store_db.store_item_features',
+      feature_names = ['store', 'item'],
+      lookup_key = 'date'
+    )]
+
+# COMMAND ----------
+
+feature_lookups
+
+# COMMAND ----------
+
+#create a training data set from feature store
+training_set = fs.create_training_set(
+  df=trainDF,
+  feature_lookups = feature_lookups,
+  label='sales'
+)
+
+# COMMAND ----------
+
+grouped_pd = training_set.load_df().toPandas()
 
 # COMMAND ----------
 
@@ -79,49 +123,52 @@ result_schema = """
   yhat_upper FLOAT
 """
 
+def extract_params(pr_model):
+    return {attr: getattr(pr_model, attr) for attr in serialize.SIMPLE_ATTRIBUTES}
+
 # get forecast
 def get_forecast_spark(keys, grouped_pd):
   
   # drop nan records
-  grouped_pd = grouped_pd.dropna()
+    grouped_pd = grouped_pd.dropna()
   
   # identify store and item
-  store = keys[0]
-  item = keys[1]
-  days_to_forecast = keys[2]
+    store = keys[0]
+    item = keys[1]
+    days_to_forecast = keys[2]
   
   # configure model
-  model = Prophet(
-    interval_width=0.95,
-    growth='linear',
-    daily_seasonality=False,
-    weekly_seasonality=True,
-    yearly_seasonality=True,
-    seasonality_mode='multiplicative'
+    model = Prophet(
+     interval_width=0.95,
+     growth='linear',
+     daily_seasonality=False,
+     weekly_seasonality=True,
+     yearly_seasonality=True,
+     seasonality_mode='multiplicative'
     )
     
     
   # train model
-  model.fit( grouped_pd.rename(columns={'date':'ds', 'sales':'y'})[['ds','y']]  )
-  params = extract_params(model)
-  mlflow.prophet.log_model(model, artifact_path="./")
-  mlflow.log_params(params)
+    model.fit( grouped_pd.rename(columns={'date':'ds', 'sales':'y'})[['ds','y']]  )
+    params = extract_params(model)
+    mlflow.prophet.log_model(model, artifact_path="./")
+    mlflow.log_params(params)
   # make forecast
-  future_pd = model.make_future_dataframe(
+    future_pd = model.make_future_dataframe(
     periods=days_to_forecast, 
     freq='d', 
     include_history=False
     )
   
   # retrieve forecast
-  forecast_pd = model.predict( future_pd )
+    forecast_pd = model.predict( future_pd )
   
   # assign store and item to group results
-  forecast_pd['store']=store
-  forecast_pd['item']=item
+    forecast_pd['store']=store
+    forecast_pd['item']=item
   
   # return results
-  return forecast_pd[['store', 'item', 'ds', 'yhat', 'yhat_lower', 'yhat_upper']]
+    return forecast_pd[['store', 'item', 'ds', 'yhat', 'yhat_lower', 'yhat_upper']]
 
 # COMMAND ----------
 

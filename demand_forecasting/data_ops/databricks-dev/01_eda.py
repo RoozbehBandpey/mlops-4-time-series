@@ -194,7 +194,7 @@ spark.sql("""
 # COMMAND ----------
 
 def monthlyItemSales(sku:int):
-  display(spark.sql(f"""
+    display(spark.sql(f"""
     SELECT
       MONTH(month) as month,
       store,
